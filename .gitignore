@@ -1,0 +1,7 @@
+*.pro
+*.user
+*/lib/*
+.vscode
+**/build*
+/BlankProject
+*.exe
