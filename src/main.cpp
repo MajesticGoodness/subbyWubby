@@ -4,13 +4,11 @@
 #include <vector>
 #include "ledder.h"
 #include <sstream>
-#include "console.h"
 #include "replacementpair.h"
 
 using namespace std;
 
-void readDaFile(string fileName, vector<Ledder> &letterFreq);
-void replaceRoutine(char targetLetter, char replacementLetter, vector<Ledder> &cipherText);
+bool replaceRoutine(char targetLetter, char replacementLetter, vector<Ledder> &cipherText);
 void loadCipherText(string &cipherTextFileName, vector<Ledder> &cipherText);
 void printToConsole(vector<Ledder> &text);
 void undoStep(replacementpair pair, vector<Ledder> &cipherText);
@@ -95,15 +93,19 @@ void printToConsole(vector<Ledder> &text) {
     cout << "\n\n";
 }
 
-void replaceRoutine(char targetLetter, char replacementLetter, vector<Ledder> &cipherText) {
+bool replaceRoutine(char targetLetter, char replacementLetter, vector<Ledder> &cipherText) {
+    bool actuallyDidSomething{false};
 
     for (Ledder &currentLetter : cipherText) {
 
         if(currentLetter.getChar() == targetLetter && !currentLetter.swapped()) {
+            actuallyDidSomething = true;
             currentLetter.setChar(replacementLetter);
             currentLetter.mark();
         }
     }
+
+    return actuallyDidSomething;
 
 }
 
@@ -210,78 +212,6 @@ void sortEngLetterFreqs(string &fileName, vector<Ledder> &englishLettersFreqs) {
         throw runtime_error(errorMsg.str());
     }
 
-}
-
-void readDaFile(string fileName, vector<Ledder> &letterFreq) {
-    ifstream infile(fileName);
-    ofstream cute("cipherFrequencies-sorted.txt");
-    ofstream cute2("englishFrequencies-sorted.txt");
-    int totalCharCount{};
-
-    if (infile) {
-        cout << "It's not fudged! :)" << '\n';
-    }
-
-    else {
-        cout << "It's fudged." << '\n';
-    }
-
-    char ch{};
-    while (infile.get(ch)) {
-        // just iterating over our vector until we find the one that matches the one we just read from the file.
-        for(Ledder &currentLetter : letterFreq) {
-            if (currentLetter.getChar() == ch) {
-                ++currentLetter; // once we do, we increment its frequency counter
-                totalCharCount++; // keep track of the total char count so we can compute relative frequencies later
-            }
-        }
-    }
-
-    // sort our vector, then output our results to a file
-
-    stable_sort(letterFreq.begin(), letterFreq.end());
-
-    for(Ledder currentLetter : letterFreq) {
-        float relFreq{};
-        relFreq = currentLetter.calcRelativeFreq(totalCharCount);
-        cute << currentLetter.getChar() << ": " << relFreq << '\n';
-    }
-
-    ifstream englishLetterFreqFile("english_letterFrequencies.csv");
-
-    vector<Ledder> englishLettersFreqs{};
-
-    if(englishLetterFreqFile) {
-        cout << "we gucci! :)";
-        string tempCharHolder{};
-        string tempFreqHolder{};
-        char separatorComma{}; // used to read in the comma seperating data fields in the csv file
-        char englishLetter{};
-        float charFreq{};
-        string lineBuffer{};
-
-        getline(englishLetterFreqFile, lineBuffer); // read in the header
-
-        while (getline(englishLetterFreqFile, lineBuffer)) {
-            istringstream tempBuffer(lineBuffer); // we're initializing a stringstream to be able to use the extraction operator to read stuff, because it automatically does conversions from strings into the correct data type for us :)
-            tempBuffer >> englishLetter >> separatorComma >> charFreq;
-
-            Ledder newLetter(englishLetter);
-            newLetter.setRelFreq(charFreq);
-            englishLettersFreqs.push_back(newLetter);
-        }
-
-        stable_sort(englishLettersFreqs.begin(), englishLettersFreqs.end());
-
-        for (Ledder currentLetter : englishLettersFreqs) {
-            cute2 << currentLetter.getChar() << ": " << currentLetter.getRelativeFreq() << '\n';
-        }
-
-    }
-
-    else {
-        cout << "we not gucci :(";
-    }
 }
 
 void undoStep(replacementpair pair, vector<Ledder> &ciphertext) {
@@ -455,10 +385,13 @@ int main() {
                 char replacementLetter = parameters[1];
                 replacementpair pair(targetLetter, replacementLetter);
                 replacementpair invertedPair(replacementLetter, targetLetter); // use this inverted pair to update the list of available replacement letters
-                listOfReplacements.push_back(pair); // keep track of the replacements we've made
-                replaceRoutine(targetLetter, replacementLetter, cipherText);
-                updateReplacementOptions(pair, cipherTextFreqs); // remove the cipher letter from the list of options
-                updateReplacementOptions(invertedPair, englishLetterFreqs); // remove the replacement letter from the list of options
+
+                if(replaceRoutine(targetLetter, replacementLetter, cipherText)) {
+                    updateReplacementOptions(pair, cipherTextFreqs); // remove the cipher letter from the list of options
+                    updateReplacementOptions(invertedPair, englishLetterFreqs); // remove the replacement letter from the list of options
+                    listOfReplacements.push_back(pair); // keep track of the replacements we've made
+                }
+
                 printToConsole(cipherText);
                 break;
             }
@@ -484,31 +417,6 @@ int main() {
     }
 
     cout << "Thankies for using!" << '\n';
-
-    // char target{'r'};
-    // char replacement{'e'};
-    // replacementpair newPair(target, replacement);
-    // replaceRoutine(target, replacement, cipherText);
-
-    // listOfReplacements.push_back(newPair);
-    // printToFile(cipherText);
-    // undoStep(newPair, cipherText);
-    // printToFile(cipherText);
-
-
-    // char check;
-
-    // cin >> check;
-
-    // vector<Ledder> letterFreqs{};
-    // string alphabet{"abcdefghijkmnlopqrstuvwxyz"};
-
-    // for (int i = 0; i < 26; i++) {
-    //     Ledder letter(alphabet[i]);
-    //     letterFreqs.push_back(letter);
-    // }
-
-    // readDaFile(fileyname, letterFreqs);
 
     return 0;
 }

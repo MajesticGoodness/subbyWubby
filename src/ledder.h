@@ -29,7 +29,7 @@ public:
 
     Ledder& operator++(); // just the prefix increment is totally fine
     friend bool operator==(Ledder letter1, Ledder letter2); // useful when we iterate over characters to replace them. assumes both letters being compared are the same case, so be careful please
-    friend bool operator<(Ledder letter1, Ledder letter2); // helpful comparator for sorting purposes!
+    friend bool operator<(Ledder letter1, Ledder letter2); // helpful comparator for sorting purposes! note that this operator is inverted so our results are sorted in descending order
 
 
 private:

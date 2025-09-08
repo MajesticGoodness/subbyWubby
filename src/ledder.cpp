@@ -69,10 +69,16 @@ bool operator==(Ledder letter1, Ledder letter2) {
 }
 
 bool operator<(Ledder letter1, Ledder letter2) {
+
+    // when sorting through the relative frequencies contained in the english letter frequencies tables, we'd like to compare their relative frequencies, not their raw counts.
+
     if (letter1.cuteFreq_ == 0 && letter2.cuteFreq_ == 0) {
-        return (letter1.relativeFreq_ < letter2.relativeFreq_);
+        return (!(letter1.relativeFreq_ < letter2.relativeFreq_));
     }
-    return (letter1.cuteFreq_ < letter2.cuteFreq_);
+
+    // compares raw counts
+
+    return (!(letter1.cuteFreq_ < letter2.cuteFreq_));
 }
 
 // just defining few setters here.
