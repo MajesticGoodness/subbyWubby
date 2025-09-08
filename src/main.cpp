@@ -208,7 +208,7 @@ void sortEngLetterFreqs(string &fileName, vector<Ledder> &englishLettersFreqs) {
 
     else {
         ostringstream errorMsg;
-        errorMsg << "wasn't able to load " << fileName << "check that it exists and that you have read/write permissions";
+        errorMsg << "wasn't able to load " << fileName << " check that it exists and that you have read/write permissions";
         throw runtime_error(errorMsg.str());
     }
 
@@ -405,6 +405,8 @@ int main() {
             break;
         default:
             // what did you DO?!
+            if(cin.bad()) throw runtime_error("input was corrupted. try restarting the program."); 
+            cin.clear();
             cout << "Unexpected input >:(" << '\n'
                  << "Try again :)" << '\n';
             break;
