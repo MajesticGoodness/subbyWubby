@@ -2,6 +2,7 @@
 author: Kelvin Rosario
 title: Project 1
 date: September 10, 2025
+linkcolor: blue
 header-includes:
   - \usepackage{float}
   - \makeatletter
@@ -32,7 +33,7 @@ riirkvr jx jqwkmcmk qmumbr cwhh urymwk wkbmvb
 
 ## 2. Introduction
 
-We didn't immediately see the need to write a program just yet. We were anxious to see if our method had validity. So, we sorted the letter frequencies of both the cipher text and of English in Google Sheets. Then, we proceeded to map letters manually.^[We do eventually get around to writing a small program once the functionality we require becomes clear.] 
+We didn't immediately see the need to write a program just yet. We were anxious to see if our method had validity. So, we sorted the letter frequencies of both the cipher text and of English in Google Sheets. Then, we proceeded to map letters manually.^[We do eventually get around to writing a small program once the functionality we require becomes clear. See the source code [here.](https://github.com/MajesticGoodness/subbyWubby)] 
 
 ![Cipher text frequencies](googleSheetsCipherLetterFreq.png)
 
@@ -294,7 +295,7 @@ eiienve ox oqinacan qauate cihh ueyain intavt
 
 Did you see that? The word 'it' just appeared! This looks like a good map. Let's keep it. The next most frequent letter pairing is cipher letter 'i' mapped to 's', so let's give it a shot.
 
-### 3.8 i --> s (Oops!)
+### 3.8 i --> s (Oops!){#Sec3-8}
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
