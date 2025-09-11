@@ -9,7 +9,7 @@ You could! That's what I tried ;)
 But you might run into the problem of accidentally remapping letters you've already decrypted. For example:
 
 * map 'w' onto 'i' ✅
-* 'map 'i' onto 's' 💥 oops! i just lost my mappings from 'w' onto 'i'!
+* map 'i' onto 's' 💥 oops! i just lost my mappings from 'w' onto 'i'!
 
 This program keeps track of letter states of characters, so this unfortunate problem doesn't happen to you :)
 
