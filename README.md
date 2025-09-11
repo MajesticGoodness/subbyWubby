@@ -17,11 +17,11 @@ This program keeps track of letter states of characters, so this unfortunate pro
 
 Make sure you sort the letter frequencies of cipher text. The program will automatically do this for you and save it to a file called 'cipherFrequencies-sorted'. Now just try your best to line these up with the expected letter frequencies that occur in English (or any other target language) and you're good to go!
 
-```replace a b``` will replace all occurances of 'a' with 'b'.
-```undo``` will undo the most recent step.
-```undo a``` will undo all mappings that resulted in 'a'.
-```exit``` gets us out of here!
-```help``` shows this helpful message :)
+* ```replace a b``` will replace all occurances of 'a' with 'b'.
+* ```undo``` will undo the most recent step.
+* ```undo a``` will undo all mappings that resulted in 'a'.
+* ```exit``` gets us out of here!
+* ```help``` shows this helpful message :)
 
 Your efforts are automatically saved at each step to a ```decryptMap.txt``` file, as well as a ```ciphertext-decrypted.txt``` file.
 
