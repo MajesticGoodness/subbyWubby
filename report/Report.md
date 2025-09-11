@@ -9,9 +9,9 @@ header-includes:
   - \makeatother
 ---
 
-## 1. Background{#backgrund}
+## 1. Background
 
-We've been tasked with reversing a relatively short piece of text that was encrypted using a substitution cipher. We're going to try to break it via a letter frequency attack, let's see if we're successful!
+We've been given a short piece of text that was encrypted using a substitution cipher. We're going to try to break by simply mapping the expected letter frequencies of English to the corresponding letter frequencies in the cipher text. Let's see if we're successful with this approach!
 
 >lrvmnir bpr sumvbwvr jx bpr lmiwv yjeryrkbi jx qmbm wi
 bpr xjvni mkd ymibrut jx irhx wi bpr riirkvr jx
@@ -32,11 +32,11 @@ riirkvr jx jqwkmcmk qmumbr cwhh urymwk wkbmvb
 
 ## 2. Introduction
 
-At this stage, we didn't immediately see the need to get started on writing a program just yet, so we sorted the letter frequencies of both the cipher text and of English in Google Sheets to allow us to immediately begin decryption attempts.^[We do eventually get around to writing a small program once the functionality we require becomes clear.] 
+We didn't immediately see the need to write a program just yet. We were anxious to see if our method had validity. So, we sorted the letter frequencies of both the cipher text and of English in Google Sheets. Then, we proceeded to map letters manually.^[We do eventually get around to writing a small program once the functionality we require becomes clear.] 
 
 ![Cipher text frequencies](googleSheetsCipherLetterFreq.png)
 
-It may not seem like much, but this critical step allowed us to build some confidence on an otherwise daunting task. Could we really do this? We immediately opened up Visual Studio Code and tried a few substitutions with just `CTRL + F`, and replace all.
+This innocent little step turned out to be critical later on, because it allowed us to build some understanding of what was needed for a decryption helper program. We started out just with Visual Studio Code and its ```CTRL+F``` find all and replace function. Just this simple approach allowed us to get surprisingly far, as we will see in Section 3.
 
 ![English letter frequencies](googleSheetsEnglishLetterFreq.png)
 
@@ -44,7 +44,7 @@ It may not seem like much, but this critical step allowed us to build some confi
 
 ### 3.1 r --> e
 
-We see that both cipher text letter `r` and english letter `e` seem to have matching frequencies, so let's try those first.
+We noticed that both cipher text letter `r` and English letter `e` seem to have matching frequencies, so let's try those first.
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
@@ -69,7 +69,7 @@ bpmb bpe xjhhjcwko wi bpe sujseu msshwvmbwjk mkd
 wkbeusuebmbwjk w jxxeu yt bpejuwei wk bpe pjse bpmb bpe
 eiiekve jx jqwkmcmk qmumbe cwhh ueymwk wkbmvb
 
-Nothing that we can really make out as English yet. We do see the word 'but' appear however it's too early for it to actually be a decrypted word. Let's try a few more substitutions that seem to match up.
+There's no real way to tell if this was a correct mapping or not. We do see the word 'but' appear, however it's too early for it to be a decrypted word. Let's try a few more.
 
 ### 3.2 b --> t
 
@@ -126,9 +126,9 @@ eiiekve jx jqwkacak qauate cwhh ueyawk wktavt
 
 ### 3.4 k --> o
 
-At this stage we've still got a few substitutions that are likely to match up but we've got a problem: the frequencies of the remaining letters are so close to each other that any one of them could be the correct candidate for substitution with 'o'. We might've also inadvertently stumbled upon an easy way to defeat this attack: make sure the cipher text frequencies are all close to each other.
+Notice anything? I don't. Let's keep trying some more.
 
-There's no way to know in advance which the correct substitution might be, so we naively try mapping 'k' to 'o'.
+Well, we would, but there's a minor issue. The next few letters that might map onto 'o' are close to each other in frequency. How do we know which letter in the cipher text is the right one? We don't. We just have to try it and see what we get.
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
@@ -156,7 +156,7 @@ tpat tpe xjhhjcwoo wi tpe sujseu asshwvatwjo aod
 woteusuetatwjo w jxxeu yt tpejuwei wo tpe pjse tpat tpe
 eiieove jx jqwoacao qauate cwhh ueyawo wotavt
 
-This seems to have gotten us less readable text. Could it be 'j' to 'o' instead?
+This seems to have gotten us less readable text. Could the correct mapping be 'j' to 'o' instead?
 
 ### 3.5 j --> o
 
@@ -186,11 +186,11 @@ tpat tpe xohhocwko wi tpe suoseu asshwvatwok akd
 wkteusuetatwok w oxxeu yt tpeouwei wk tpe pose tpat tpe
 eiiekve ox oqwkacak qauate cwhh ueyawk wktavt
 
-We start seeing 'to' pop up, and we're confident it's actually 'to', because we mapped 'b' to 't' earlier. So we're starting to see something that looks like it's leaning towards English! It looks like this was the correct substitution, so we'll keep trying a few more.
+I see the word 'to' has popped up, and it's likely that it's a word we can trust, because we mapped 'b' to 't' earlier and that had a very strong frequency match. Since it looks like we're on the right path, let's keep trying.
 
 ### 3.6 k --> i
 
-Since 'k' was undone in the last step, we wonder what it might be. Trying to match it with the English letter closest in relative frequency would have us map 'k' --> 'i'.
+Since 'k' was undone in the last step, what it might be? Let's try to match it with next most frequent English letter in our chart, 'i'.
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
@@ -219,7 +219,7 @@ tpat tpe xohhocwio wi tpe suoseu asshwvatwoi aid
 witeusuetatwoi w oxxeu yt tpeouwei wi tpe pose tpat tpe
 eiieive ox oqwiacai qauate cwhh ueyawi witavt
 
-This doesn't seem like a good map. We got 'iot' as a decrypted word, and we're confident that the 'o' and the 't' are correct mappings. The next closest English letter would be 'n', so let's try that next.
+That certainly doesn't seem like a good map. We got 'iot' as a decrypted word. We're confident that the 'o' and the 't' are correct mappings, so this just gave us a garbled English word. Let's try finding a different mapping for 'k'. The next closest English letter after 'i' would be 'n', so let's try that.
 
 ### 3.6 k --> n
 
@@ -250,17 +250,17 @@ tpat tpe xohhocwno wi tpe suoseu asshwvatwon and
 wnteusuetatwon w oxxeu yt tpeouwei wn tpe pose tpat tpe
 eiienve ox oqwnacan qauate cwhh ueyawn wntavt
 
-We just saw 'not' appear! This definitely feels like the right direction so far.
+We just saw 'not' appear! This is much better.
 
 ### 3.7 Taking a look at our frequency tables again
 
-It seems like our frequency tables are becoming less reliable. It's still too early to start guessing so they're still our best bet at the moment. Let's revist them for likely substitutions.
+It does seem like our frequency tables are becoming less reliable. We might have to start relying on just our intuition soon. That said, it's still too early to start guessing. Let's revist the tables again.
 
 ![Cipher text frequencies continued](googleSheetsCipherLetterFreq2.png)
 
 ![English letter frequencies continued](googleSheetsEnglishLetterFreq2.png)
 
-We see that the next most frequent cipher letter is 'w'. Let's try mapping that to the next most frequent English letter, 'i'.
+We see that the next most frequent cipher letter is 'w'. Perhaps that can be mapped onto the next most frequent English letter, 'i', which we erroneously thought 'k' was mapped to.
 
 ### 3.8 w --> i
 
@@ -292,9 +292,9 @@ tpat tpe xohhocino ii tpe suoseu asshivation and
 inteusuetation i oxxeu yt tpeouiei in tpe pose tpat tpe
 eiienve ox oqinacan qauate cihh ueyain intavt
 
-We see the word 'it' appear, so this certainly seems like a good substitution! We'll keep it. The next most frequent letter pairing is cipher letter 'i' mapped to 's'. Let's give it a shot.
+Did you see that? The word 'it' just appeared! This looks like a good map. Let's keep it. The next most frequent letter pairing is cipher letter 'i' mapped to 's', so let's give it a shot.
 
-### 3.8 i --> s (Oh....no)
+### 3.8 i --> s (Oops!)
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
@@ -325,7 +325,9 @@ tpat tpe xohhocsno ss tpe suoseu asshsvatson and
 snteusuetatson s oxxeu yt tpeouses sn tpe pose tpat tpe
 essenve ox oqsnacan qauate cshh ueyasn sntavt
 
-Oh no! We just undid our earlier decryption of 'w' to 'i'. Now we see what we need our program to do. We a way to to track letters that have already been decrypted. We'll start thinking about how to implement that soon, but for now let's see how far we can get with an easy trick:
+Everything was going so well. What happened? Our attempts to map 'i' to 's' inadvertently undid our mapping of 'w' to 'i'. What do we do now?
+
+How about an easy trick:
 
 1. Undo w -> i
 2. Map i -> s
@@ -348,7 +350,7 @@ tpat tpe xohhocino is tpe suoseu asshivation and
 inteusuetation i oxxeu yt tpeouies in tpe pose tpat tpe
 essenve ox oqinacan qauate cihh ueyain intavt
 
-All of the sudden we have a lot of words we can guess. 'tpe' is probably 'the', so we can guess that 'p' maps onto 'h'.
+It worked! We're starting to see a lot of words now. So much that we could probably guess a few mappings. One such word is 'tpe', which is probably 'the', so we can guess that 'p' maps onto 'h'.
 
 ### 3.9 p --> h
 
@@ -382,15 +384,15 @@ that the xohhocino is the suoseu asshivation and
 inteusuetation i oxxeu yt theouies in the hose that the
 essenve ox oqinacan qauate cihh ueyain intavt
 
-This definitely seems right. Anymore substitutions we can glaze from this so far? 
+This definitely seems right. What other mappings can we guess?
 
 * How about 'theouies'? Perhaps we can map 'u' to 'r' to make 'theories'. It's worth a shot.
 * The word 'ox' looks enticing. That's probably 'of'. Let's try mapping 'x' to 'f' as well.
-* 'it is not an east tasq'? 't' probably maps onto 'y', and 'q' probably maps onto 'k'.
+* 'it is not an east tasq'? That's an interesting phrase. The map is probably 't' onto 'y', and 'q' onto 'k'.
 
 Let's try these to see what we get.
 
-### 3.10 Oh....no Part 2: u --> r, x --> f, t --> y, q --> k
+### 3.10 Oops again! u --> r, x --> f, t --> y, q --> k
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
@@ -409,7 +411,7 @@ Let's try these to see what we get.
 
 : Replacements so far
 
-Oh no! Not again! Our mapping of 't' to 'y' undid our mapping of 'b' to 't'. This is really becoming cumbersome now:
+Seems like it happened again. Our mapping of 't' to 'y' undid our mapping of 'b' to 't'. This approach is becoming untenable. It might be time to wrap it up.
 
 >levanse yhe sravyive of yhe lasiv yoeeyenys of kaya is
 yhe fovns and yasyery of sehf is yhe essenve of
@@ -428,9 +430,9 @@ yhay yhe fohhocino is yhe sroser asshivayion and
 inyersreyayion i offer yy yheories in yhe hose yhay yhe
 essenve of okinacan karaye cihh reyain inyavy
 
-### 3.11 Abandoning the manual approach...but not before making a few notes. {#seggs}
+### 3.11 Abandoning the manual approach
 
-So, it looks like we've gotten as far as we could with just CTRL + F and replace. At this point, let's try to revert the 't' --> 'y' mapping and see if we can jot down some more guesses for when we have our program up and running.
+So, it looks like we've gotten as far as we could with just CTRL + F and replace. At this point, let's try to revert the 't' --> 'y' mapping and see if we scavenge a few more guesses for future reference.
 
 >levanse the sravtive of the lasiv yoeeyents of kata is
 the fovns and yastert of sehf is the essenve of
@@ -454,9 +456,9 @@ We can see a few likely candidates (it's okay if they're wrong at this stage).
 * 'reyain' is probably 'remain', so maybe y --> m is a valid mapping. Noted.
 * 'intavt' is probably 'intact', so let's note v --> c.
 * 'sedx'? this passage looks like it's talking about spirituality, so I wouldn't be surprised if that were 'self'. Let's note d --> l.
-* 'i shahh try to' looks like it's trying to say 'i shall try to'. let's note h --> l. (we're going to have to use our trick from 3.8 to apply it)
+* 'i shahh try to' looks like it's trying to say 'i shall try to'. let's note h --> l. (we're going to have to use our trick from Section 3.8 to apply it)
 
-Let's apply these guesses and see if we can glean anything more.
+Let's try these mappings and see if they bear any fruit.
 
 >lecanse the sractice of the lasic moeements of kata is
 the focns anl mastert of sehf is the essence of
@@ -475,7 +477,7 @@ that the fohhocino is the sroser asshication anl
 intersretation i offer mt theories in the hose that the
 essence of okinacan karate cihh remain intact
 
-* The d --> l mapping didn't seem quite correct. It turned some words like 'and' as well as 'lased' into words that are unlikely to even exist. Undoing it and applying the other mappings we noted gives us:
+Mapping 'd' onto 'l' doesn't seem quite correct. It garbled words like 'and'. Let's try to discard that map while applying the others we noted.
 
 >lecanse the sractice of the lasic moeements of kata is
 the focns and mastert of self is the essence of
@@ -494,14 +496,14 @@ that the follocino is the sroser asslication and
 intersretation i offer mt theories in the hose that the
 essence of okinacan karate cill remain intact
 
-We can glean a few more guesses from this:
+That looks a lot better! In fact it looks so readable that, we can still keep guessing some more mappings.
 
 * 'c' probably maps onto 'w' because 'cill' and 'cith' looks like they're trying to be 'will' and 'with', respectively
-* 's' probably maps onto 'p', because 'in the hose' is screaming out to me that it wants to be 'in the hope'
+* 's' probably maps onto 'p', because 'in the hose' is screaming out to me that it's actually 'in the hope'
 * 'l' probably maps onto 'b', because 'lased' looks a lot like 'based'
-* 'o' is probably 'g' from 'sionificance' and 'accordino'
+* 'o' is probably maps onto 'g', because we see 'sionificance' and 'accordino' are trying to be 'significance and 'according'.
 
-There are probably a few more mappings one could guess from this. This felt like a great stopping point though--we had a good portion of the cipher decrypted. The few mappings that remained were the annoying ones that would undo a prior decrpytion, so it was time to tackle those with our little program instead.
+We've gotten surprisingly far with just the manual approach. This feels like a great stopping point to start writing our program. Now we understood what we needed--a way to keep track of what's already been decrypted so we don't mess with it again.
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
@@ -529,7 +531,7 @@ There are probably a few more mappings one could guess from this. This felt like
 
 ## 4. Time to Write Our Little Program
 
-So, our main objective to achieve with our program is to be able to make note of letters which have already been decrypted and to not touch those again. How should we do that? I thought of keeping track of the state of letters ```a~z``` in an array of integers, with a size of 26. If a letter had been swapped, I would just update its corresponding element to 1. For example, if I wanted to update letter states of all 'i', I could just say:
+So, our main objective to achieve with our program is to be able to make note of letters which have already been decrypted. How can we do that? I thought of keeping track of the state of letters ```a~z``` in an array of integers, with a size of 26. If a letter had been swapped, I would just update its entry from ```0``` to ```1```. For example, if I wanted to update letter states of all 'i', I could just say:
 
 ```cpp
     int letterStates[26]{};
@@ -537,9 +539,9 @@ So, our main objective to achieve with our program is to be able to make note of
     letterStates[replacementLetter - 'a'] = 1;
 ```
 
-As I was writing it though, I realized I didn't really care about the letters themselves, but the *fields* they occupied. For example, if I mapped w --> i, then the above code would correctly reflect that the letters 'i' should not be swapped again. But what if I had to do i --> s? I'm out of luck. What I wanted was just to leave swapped *fields* alone, not letters.
+As I was writing it though, I realized I didn't really care about the letters themselves. It was the *fields* I was interested in. For example, if I mapped 'w' onto 'i', then the above code would correctly reflect that the letters 'i' should not be swapped again. But what if I wanted to then map 'i' onto 's' in a subsequent step? I'm out of luck. What I wanted was just to leave swapped *fields* alone, not letters.
 
-To accomplish this I opted for an object-oriented approach. I created a simple ```Ledder``` structure that would keep track of this state for me. The idea was to simply create letters that could carry this extra data field for me:
+To accomplish this I opted for an object-oriented approach. I created a simple ```Ledder``` structure that would essentially hold characters, but on steroids. They could keep track of their states for me.
 
 ```cpp
 class Ledder {
@@ -552,8 +554,7 @@ private:
     bool alreadySwapped_{}; // this little boolean is the magic
 };
 ```
-
-But how would I cross reference this with which fields in the cipher text no longer needed to be decrypted? I simply loaded the cipher text into a vector of ```Ledder```, which I would iterate through everytime a substitution had to be made. Whenever we would find a character we would like to replace, we would first check if that *field* had already been swapped. If it hasn't, we proceed to make the replacement, then make well a call to ```mark()``` which marks that field as no longer needing decryption.
+I then took the source cipher text, and created a new ```Ledder``` object for each and every letter. These ```Ledders``` were stored in a ```vector``` that my program would reference whenever it needed access to the cipher text. Anytime I needed to decrypt, instead of reading it directly from the file, I would read it from this ```vector```, where all the characters were juiced up.
 
 ```cpp
 void loadCipherText(string &cipherTextFileName, vector<Ledder> &cipherText) {
@@ -570,6 +571,8 @@ void loadCipherText(string &cipherTextFileName, vector<Ledder> &cipherText) {
 
     }
 ```
+
+Whenever I would perform a mapping, the code below would flip the ```Ledder``` state for me by calling ```mark()```. This simple approach worked out surprisingly well.
 
 ```cpp
 bool replaceRoutine() {
@@ -588,11 +591,11 @@ bool replaceRoutine() {
 }
 ```
 
-I also implemented a few extra bells and whistles into the program, like saving a decryption map of steps we've taken so far, and an undo function--but really, these two functions and our ```Ledder``` class is the core of what allows us to carry out the decryption process.
+I also implemented a few extra bells and whistles into the program, like saving a decryption map of steps we've taken so far, as well as an undo function. Those are auxiliary. Our ```replaceRoutine()``` is really the heart of the program, and it's what allowed us to decrypt with minimal fuss.
 
-## 5. Attempting decryption again. This time, with a little friend!
+## 5. Back into the trenches. This time, with a friend.
 
-Now that we have our program, we can decrypt without worry of undoing a prior step. Let's refer back to the mappings we were able to figure out manually in Section 3 and try them again with our program.
+Now that we have our friend, we can decrypt without having to worry about undoing a prior decryption step. Let's walkthrough the mappings we were able to figure out manually--only this time with our program instead of Visual Studio Code's ```CTRL+F```.
 
 | Cipher Letter | English Letter |
 | ------------- | -------------- |
@@ -657,13 +660,11 @@ Now that we have our program, we can decrypt without worry of undoing a prior st
 ![mapping o --> g](replaceOtoG.PNG)
 
 
-Phew! That was quite a few mappings to go through. But look! We're really starting to be able to see the picture now. From here we can glean a few more mappings:
+That was quite a few mappings to go through. But it was worth it. Now we're really starting to be able to see big picture. Immediately we see a few likely mappings:
 
-* n --> u, from words like 'wonld', 'snch' 'bnt' 'sonnd', anthority', 'mnst' and probably a few others.
-* a --> x, from 'eaplanation', 'eaxtent', and 'eaperience'
-* e --> v, from 'moeements'
-
-Let's give these a try.
+* 'n' probably maps onto 'u', from words like 'wonld', 'snch' 'bnt' 'sonnd', anthority', 'mnst' and probably a few others.
+* 'a' might be 'x', from words like 'eaplanation', 'eaxtent', and 'eaperience'.
+* 'e' maps onto 'v', from 'moeements'.
 
 ![mapping n --> u](replaceNtoU.PNG)
 
@@ -671,16 +672,14 @@ Let's give these a try.
 
 ![mapping e --> v](replaceEtoV.PNG)
 
-Those worked out well! Now we've only got a few letters left to decrypt. Let's see if anything pops out at us again.
+Looking good. We can see a few stray words that aren't quite right yet, though.
 
-* f --> q, from 'fualified'
-* g --> z, from 'recogniging'
+* 'f' should probably be 'q', because we see 'fualified'.
+* 'g' is probably 'z', from the word 'recogniging'.
 
 ![mapping f --> q](replaceFtoQ.PNG)
 
 ![mapping g --> z](replaceGtoZ.PNG)
-
-Hmm..nothing else really pops out to us. We recall from our frequency table from 'z' never appears in the cipher text. As for 'd', we tried mapping it onto 'l' in section 3.11 and it seemed like a better idea to leave it alone. Turns out it mapped onto itself this whole time! Looks like the fully decrypted text turned out to be:
 
 >because the practice of the basic movements of kata is
 the focus and mastery of self is the essence of
@@ -699,12 +698,12 @@ that the following is the proper application and
 interpretation i offer my theories in the hope that the
 essence of okinawan karate will remain intact
 
-Mastery of the self? I can get behind that.
+This reads like perfectly fine English. Have we done it? We never did figure out what 'd' maps onto. We know that 'z' doesn't occur at all in the text, so that doesn't have a mapping. Maybe 'd' just maps onto...'d'? That would make the most sense. It looks like we're done here, then! This seems like it's a preface to a Karate book. My deepest respect to the Sensei for sharing his wisdom with all of us.
 
 ## 6. Conclusion
 
-It was incredibly statisfying to go from "can we really do this?" to a fully decrypted text. We started out just playing around with a few substitutions in Visual Studio Code with its ```CTRL+F```. This turned out to be a critical step, because it allowed us to build some confidence that this was actually possible, as well as giving us some inkling of what our program needed to do, and why. 
+It was incredibly statisfying to go from "can we really do this?" to a fully decrypted text. We started out just playing around with a few mappings manually. This grunt work actually paid off in the end though--it allowed us to build some confidence that this was actually possible, and more perhaps more importantly, it let us realize what we needed our program to help us with.
 
-Once we had our program up and running, we continued the decryption process from where we left off. It was considerably easier this time around. All we had to do was decrypt a few more letters that were cumbersome to do with the manual method. After 'n', 'a' and 'e' were correctly mapped, the final solution basically fell into our laps. It was hard to see the correct mappings for 'f' and 'g' before, but now it was easy. With those two final mappings out of the way, we finally got to see our fully decrypted text! 
+Once we had our program up and running, we were able to pick back up from where we left off. It was considerably easier this time around. The final solution basically fell into our laps. By the end, I felt as if though I've done something worthwhile. I was genuinely curious what the decrypted text was--no one goes out of their way to encrypt something unless they felt it had some deeper meaning.
 
-By the end I felt as if though I've done something cool! Thank you for the experience.
+Thank you.
